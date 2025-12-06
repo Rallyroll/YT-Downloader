@@ -12,23 +12,22 @@ url = input("Introduce la url del audio, canción o playlist que deseas descarga
 output_dir = "downloadsMP3"
 os.makedirs(output_dir, exist_ok=True)
 
-# Configuración de yt-dlp con máxima compatibilidad de carátula
+# Configuración de yt-dlp: Autor y Álbum (Solo si existe)
 ydl_opts = {
     'format': 'bestaudio[ext=m4a]/bestaudio/best',
     'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
     
-    # 1. INDICA A YT-DLP QUE DESCARGUE LA MINIATURA
+    # Opciones de Carátula (Cover Art)
     'writethumbnail': True, 
-    
-    # 2. INDICA A YT-DLP QUE CONVIERTA LA MINIATURA A JPG (Mejor compatibilidad)
     'convert-thumbnails': 'jpg', 
     
-    # 3. **NUEVO:** FUERZA UNA RESOLUCIÓN MÁXIMA PARA LA MINIATURA (Ej. 600px de ancho)
-    # Esto reduce el tamaño del archivo de carátula, resolviendo el problema en algunos móviles.
-    # El valor 'max_resolution' no es una opción oficial, usaremos el formato con limitación de ancho
-    # La mejor manera de forzar esto es usando la opción 'format' directamente, pero es más complejo. 
-    # Dejamos la selección de tamaño en el postprocesador para simplificar.
-    # Vamos a usar 'postprocessor_args' con el argumento de tamaño de ffmpeg para máxima precisión.
+    # **CORRECCIÓN CLAVE 1:** Define explícitamente el campo 'album'.
+    # Usamos %(album|)s, que significa: usa el valor de 'album', o nada si está vacío.
+    # El campo 'artist' (Autor) se añade por defecto si 'metadatatofile' está activo.
+    'metadata_from_field': {'album': '%(album|)s'},
+
+    # Esta opción es necesaria para que yt-dlp lea y escriba las variables.
+    'metadatatofile': True, 
     
     'postprocessors': [
         {
@@ -37,12 +36,14 @@ ydl_opts = {
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         },
-        # POSTPROCESADOR CORREGIDO, SIN ARGUMENTOS INNECESARIOS
         {
+            # **CORRECCIÓN CLAVE 2:** El post-procesador FFmpegMetadata ya no
+            # necesita argumentos, pues la configuración de metadatos se hizo arriba.
+            'key': 'FFmpegMetadata',
+        },
+        {
+            # INCRUSTA LA MINIATURA COMO CARÁTULA
             'key': 'EmbedThumbnail',  
-            # Se puede usar postprocessor_args para forzar el tamaño si es necesario, pero
-            # primero probemos sin argumentos complejos, ya que la conversión a JPG y la eliminación del error
-            # de sintaxis deberían ser suficientes.
         }
     ],
     
@@ -52,7 +53,7 @@ ydl_opts = {
 
 # Descargar audio
 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    print(f"\n--- Iniciando descarga y conversión para: {url} ---\n")
+    print(f"\n--- Iniciando descarga y conversión con metadatos corregidos para: {url} ---\n")
     info = ydl.extract_info(url, download=True)
     
     # Obtiene el título para el mensaje final
@@ -64,5 +65,5 @@ with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     mp3_path_ejemplo = os.path.join(output_dir, f"{title}.mp3")
     
 print(f"\n✅ Proceso completado exitosamente.")
-print(f"La música (con carátula forzada a JPG) está en la carpeta: {output_dir}")
+print(f"La música (con metadatos corregidos) está en la carpeta: {output_dir}")
 print(f"Archivo generado en: {mp3_path_ejemplo}")
