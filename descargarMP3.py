@@ -22,6 +22,7 @@ ydl_opts = {
         'preferredquality': '192',
     }],
     'ffmpeg_location': os.getenv('FFMPEG_PATH'),  # Asegúrate de que ffmpeg esté en tu PATH
+    'fragment_retries': 10,
 }
 
 # Descargar audio
