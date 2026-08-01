@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 # Carga las variables del archivo .env
 load_dotenv() 
 
+print(f"\n\x1b[46m \x1b[1m \x1b[30"+"~~~~~~ YT DOWNLOADER ~~~~~~"+"\x1b[0m\n")
+
 # Enlace de YouTube o SoundCloud
 url = input("Introduce la url del audio, canción o playlist que deseas descargar: \n")
 
@@ -39,5 +41,5 @@ with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     mp3_path_ejemplo = os.path.join(output_dir, f"{title}.mp3")
     
 print(f"\n✅ Proceso completado exitosamente.")
-print(f"La música (con metadatos corregidos) está en la carpeta: {output_dir}")
-print(f"Archivo generado en: {mp3_path_ejemplo}")
+print(f"La música está en la carpeta:"+"\x1b[34m\x1b[1m "+ output_dir+"\x1b[0m")
+print(f"Archivo generado en:"+"\x1b[35m\x1b[1m "+ mp3_path_ejemplo+"\x1b[0m")
