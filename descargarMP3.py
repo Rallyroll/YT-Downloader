@@ -16,7 +16,6 @@ os.makedirs(output_dir, exist_ok=True)
 ydl_opts = {
     'format': 'bestaudio[ext=m4a]/bestaudio/best',
     'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-<<<<<<< HEAD
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
@@ -24,41 +23,6 @@ ydl_opts = {
     }],
     'ffmpeg_location': os.getenv('FFMPEG_PATH'),  # Asegúrate de que ffmpeg esté en tu PATH
     'fragment_retries': 10,
-=======
-    
-    # Opciones de Carátula (Cover Art)
-    'writethumbnail': True, 
-    'convert-thumbnails': 'jpg', 
-    
-    # **CORRECCIÓN CLAVE 1:** Define explícitamente el campo 'album'.
-    # Usamos %(album|)s, que significa: usa el valor de 'album', o nada si está vacío.
-    # El campo 'artist' (Autor) se añade por defecto si 'metadatatofile' está activo.
-    'metadata_from_field': {'album': '%(album|)s'},
-
-    # Esta opción es necesaria para que yt-dlp lea y escriba las variables.
-    'metadatatofile': True, 
-    
-    'postprocessors': [
-        {
-            # CONVIERTE EL AUDIO EXTRAÍDO A MP3
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        },
-        {
-            # **CORRECCIÓN CLAVE 2:** El post-procesador FFmpegMetadata ya no
-            # necesita argumentos, pues la configuración de metadatos se hizo arriba.
-            'key': 'FFmpegMetadata',
-        },
-        {
-            # INCRUSTA LA MINIATURA COMO CARÁTULA
-            'key': 'EmbedThumbnail',  
-        }
-    ],
-    
-    # RUTA A FFMPEG (importante para la conversión y la incrustación)
-    'ffmpeg_location': os.getenv('FFMPEG_PATH'), 
->>>>>>> 097d0876cdf44a405651eaf624a43364d49f599c
 }
 
 # Descargar audio
